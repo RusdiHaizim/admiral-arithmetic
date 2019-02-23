@@ -13,8 +13,8 @@ class ServerThread(threading.Thread):
             if msg=='bye':
                 break
 
-            #print ("attack vector :", msg)
-            #replace with sw interrupt code
+            my_map.update_on_attack(msg[0],msg[2])
+            #update display
 
         print ("Client at ", clientAddress , " disconnected...")
         self.csocket.close()
@@ -30,7 +30,8 @@ class ClientThread(threading.Thread):
             msg = data.decode()
             if exitflag:
                 break
-            #replace with sw interrupt code
+            my_map.update_on_attack(msg[0],msg[2])
+            #update display
         self.csocket.close()
 
 class Ship(object):
@@ -79,7 +80,7 @@ class Matrix(object):
         changes self.message to "Hit" or "Miss"
         '''
         self.array[y][x] += 2
-        self.message = 1 if (self.array[x][y] % 2) else 0
+        self.message = 1 if (self.array[y][x] % 2) else 0
 
     def get_message(self):
         return self.message
@@ -98,7 +99,7 @@ class Matrix(object):
         for i in range(24):
             row = i // 8
             col = i % 8
-            self.array[row][col] = int(string[i])
+            self.array[row][col] = int(string[i])-48
 
     def prepare_string(self):
         package = ""
