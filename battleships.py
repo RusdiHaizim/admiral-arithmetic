@@ -35,6 +35,9 @@ global is_player_1
 is_player_1 = 1
 global exitflag
 exitflag = 1
+#global c
+#global addr
+#global server
 #ships
 
 ship_list = []
@@ -91,8 +94,9 @@ def setup_myships():
 
     my_map.message = my_map.prepare_string()
 
-    IP = "172.31.17.23"
+    IP = "172.31.46.113"
     PORT = 8080
+    global server
     server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     if is_player_1:
         server.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
@@ -100,7 +104,9 @@ def setup_myships():
         server.bind((IP, PORT))
         print("listen")
         server.listen(1)
-        c,addr = server.accept() #client, address
+        global c
+        global addr
+        c, addr = server.accept() #client, address
         print("Got connection from", addr)
     else:
         server.connect((IP,PORT))
@@ -114,7 +120,7 @@ def setup_myships():
                     c.send(bytes(my_map.message,'UTF-8'))
                     sent = True
 
-                elif not received:
+                if not received:
                     data = c.recv(1024)
                     received = True
                     enemy_map.read_from_string(data)
@@ -125,7 +131,7 @@ def setup_myships():
                     received = True
                     enemy_map.read_from_string(data)
 
-                elif not sent:
+                if not sent:
                     server.send(bytes(my_map.message,'UTF-8'))
                     sent = True
 
@@ -135,7 +141,10 @@ def setup_myships():
 
 # Loop:
 
+
+
 def loop():
+    qn = 0
     while True:
         '''
         display qn no
@@ -150,7 +159,6 @@ def loop():
         '''
 
         # fetch and ask question
-        qn = 0
         print("Question #"+str(qn+1)+"\n")
         cur = qn_lst[qn]
         print(cur)
@@ -166,15 +174,22 @@ def loop():
             x = int(input("Enter x coordinate to attack: "))
             y = int(input("Enter y coordinate to attack: "))
         end = time.time()
-        if (end - time)>10:
+        if (end - start)>10:
             print("Too slow, Admiral! We missed the window to attack!")
             x = randint(8)
             y = randint(3)
+        qn+=1
+        if qn==24:
+            break
 
         #sending of attack vector
         if(is_player_1):
-            c.send(bytes((x,y),'UTF-8'))
-'''
+            c.send(bytes(("%s,%s"%(x,y)),'UTF-8'))
+        else:
+            server.send(bytes(("%s,%s"%(x,y)),'UTF-8'))
+
+setup_myships()
+
 if is_player_1:
     newthread = ServerThread(addr,c)
 else:
@@ -182,10 +197,9 @@ else:
 
 newthread.start()
 
-#insert code for stuff
+loop()
 
 
 if not is_player_1:
     c.send(bytes("bye",'UTF-8'))
 newthread.join()
-'''
