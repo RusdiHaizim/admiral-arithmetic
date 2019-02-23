@@ -77,7 +77,24 @@ def setup_myships():
         x = coords[i][0]
         y = coords[i][1]
         my_map.put_ship(ship_list[i],x,y)
-
+    '''   
+    for ship in ship_list:
+        print("Where would you like to place your "+ship.name+", Admiral?")
+        x = int(input("Enter x coordinate: "))
+        y = int(input("Enter y coordinate: "))
+        if is_valid(ship,my_map,x,y):
+            my_map.put_ship(ship,x,y)
+            #update_display
+            print("Roger.")
+        else:
+            while not is_valid(ship,my_map,x,y):
+                print("Sir, please provide a valid coordinate.")
+                x = int(input("Enter x coordinate: "))
+                y = int(input("Enter y coordinate: "))
+            my_map.put_ship(ship,x,y)
+            #update_display
+            print("Roger.")
+    '''
 
     my_map.message = my_map.prepare_string()
 
@@ -179,6 +196,11 @@ def loop():
             c.send(bytes(("%s,%s"%(x,y)),'UTF-8'))
         else:
             server.send(bytes(("%s,%s"%(x,y)),'UTF-8'))
+        
+        #update of your copy of enemy matrix
+        enemy_map.update_on_attack(x,y)
+        if enemy_map.message:
+            print("You've hit the enemy at ("+x+','+y+")!\n")
 
 setup_myships()
 
