@@ -1,6 +1,8 @@
 import threading
 from random import *
 
+
+
 class ServerThread(threading.Thread):
     def __init__(self,clientAddress,clientsocket):
         threading.Thread.__init__(self)
@@ -8,17 +10,20 @@ class ServerThread(threading.Thread):
     def run(self):
         msg = ''
         while True:
-            data = self.csocket.recv(2048)
+            data = self.csocket.recv(16)
+            print(data)
             msg = data.decode()
             if msg=='bye':
                 break
-
-            my_map.update_on_attack(msg[0],msg[2])
+            print(msg)
+            print('\n')
+            print((int(msg[0]),int(msg[2])))
+            print('\n')
+            my_map.update_on_attack(int(msg[0]),int(msg[2]))
             #update display
 
         print ("Client at ", clientAddress , " disconnected...")
-        self.csocket.close()
-
+        
 class ClientThread(threading.Thread):
     def __init__(self, client):
         threading.Thread.__init__(self)
@@ -26,11 +31,11 @@ class ClientThread(threading.Thread):
     def run(self):
         msg = ''
         while True:
-            data = self.csocket.recv(2048)
+            data = self.csocket.recv(16)
             msg = data.decode()
             if exitflag:
                 break
-            my_map.update_on_attack(msg[0],msg[2])
+            my_map.update_on_attack(int(msg[0])-48,int(msg[2])-48)
             #update display
         self.csocket.close()
 
@@ -116,3 +121,10 @@ def is_valid(ship, matrix, x, y):
             if matrix.array[y][i]==1:
                 return False
         return True
+
+global my_map
+my_map= Matrix()
+global enemy_map
+enemy_map = Matrix()
+global exitflag
+exitflag = 0
