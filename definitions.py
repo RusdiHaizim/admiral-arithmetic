@@ -118,6 +118,25 @@ class Matrix(object):
                 package+=str(j)
         return package
 
+    def check_lose(self, other):
+        # True: self lost
+        # False: other lost, self won
+        # None: game in progress
+        res = True
+        for i in self.array:
+            for j in i:
+                if j == 1:
+                    res = False
+        if res:
+            return res #lost
+        res = False
+        for i in other.array:
+            for j in i:
+                if j == 1:
+                    res = None 
+        return res
+            
+
 def is_valid(ship, matrix, x, y):
     if not (0<=x<=7-ship.size+1) or not (0<=y<3): #checks for valid range
         return False
