@@ -2,7 +2,6 @@ import threading
 from random import *
 
 
-
 class ServerThread(threading.Thread):
     def __init__(self,clientAddress,clientsocket):
         threading.Thread.__init__(self)
@@ -15,15 +14,15 @@ class ServerThread(threading.Thread):
             msg = data.decode()
             if msg=='bye':
                 break
-            print(msg)
-            print('\n')
-            print((int(msg[0]),int(msg[2])))
-            print('\n')
-            my_map.update_on_attack(int(msg[0]),int(msg[2]))
+            x = int(msg[0])
+            y = int(msg[2])
+            my_map.update_on_attack(x,y)
+            if my_map.message == 1:
+                print("You've been hit at ("+x+','+y+"), sir!\n")
             #update display
 
         print ("Client at ", clientAddress , " disconnected...")
-        
+
 class ClientThread(threading.Thread):
     def __init__(self, client):
         threading.Thread.__init__(self)
@@ -35,7 +34,11 @@ class ClientThread(threading.Thread):
             msg = data.decode()
             if exitflag:
                 break
-            my_map.update_on_attack(int(msg[0])-48,int(msg[2])-48)
+            x = int(msg[0])
+            y = int(msg[2])
+            my_map.update_on_attack(x,y)
+            if my_map.message == 1:
+                print("You've been hit at ("+x+','+y+"), sir!\n")
             #update display
         self.csocket.close()
 
@@ -85,6 +88,8 @@ class Matrix(object):
         changes self.message to "Hit" or "Miss"
         '''
         self.array[y][x] += 2
+        if self.array[y][x] > 3:
+            self.array[y][x] -= 2 #preserves state when hit multiple times
         self.message = 1 if (self.array[y][x] % 2) else 0
 
     def get_message(self):
