@@ -91,12 +91,15 @@ def setup_myships():
 
     my_map.message = my_map.prepare_string()
 
-    IP = '172.31.17.23'
-    PORT = 65432
-    server = socket.socket()
+    IP = "172.31.17.23"
+    PORT = 8080
+    server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     if is_player_1:
+        server.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+        print("bind")
         server.bind((IP, PORT))
-        server.listen(5)
+        print("listen")
+        server.listen(1)
         c,addr = server.accept() #client, address
         print("Got connection from", addr)
     else:
@@ -118,7 +121,7 @@ def setup_myships():
 
             else:
                 if not received:
-                    data = c.recv(1024)
+                    data = server.recv(1024)
                     received = True
                     enemy_map.read_from_string(data)
 
