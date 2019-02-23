@@ -27,14 +27,12 @@ Structure of Question List: consists of Question objects
 
 #array 1 (default) - map of hit/miss/not hit on enemy's side
 #array 2 - map of my ships
-global my_map
-my_map= Matrix()
-global enemy_map
-enemy_map = Matrix()
+#global my_map
+#my_map= Matrix()
+#global enemy_map
+#enemy_map = Matrix()
 global is_player_1
 is_player_1 = 1
-global exitflag
-exitflag = 1
 #global c
 #global addr
 #global server
@@ -74,27 +72,16 @@ def setup_myships():
     '''
     sent, received = False, False
 
-    for ship in ship_list:
-        print("Where would you like to place your "+ship.name+", Admiral?")
-        x = int(input("Enter x coordinate: "))
-        y = int(input("Enter y coordinate: "))
-        if is_valid(ship,my_map,x,y):
-            my_map.put_ship(ship,x,y)
-            #update_display
-            print("Roger.")
-        else:
-            while not is_valid(ship,my_map,x,y):
-                print("Sir, please provide a valid coordinate.")
-                x = int(input("Enter x coordinate: "))
-                y = int(input("Enter y coordinate: "))
-            my_map.put_ship(ship,x,y)
-            #update_display
-            print("Roger.")
+    coords = [(2,1),(3,2),(4,1),(0,0),(0,2),(4,0)]
+    for i in range(6):
+        x = coords[i][0]
+        y = coords[i][1]
+        my_map.put_ship(ship_list[i],x,y)
 
 
     my_map.message = my_map.prepare_string()
 
-    IP = "172.31.46.113"
+    IP = "172.20.10.10"
     PORT = 8080
     global server
     server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -109,7 +96,14 @@ def setup_myships():
         c, addr = server.accept() #client, address
         print("Got connection from", addr)
     else:
-        server.connect((IP,PORT))
+        while(1):
+            try:
+                print("attempt")
+                server.connect((IP,PORT))
+                print("connected")
+                break
+            except Exception as e:
+                print(e)
 
 
 
@@ -140,8 +134,6 @@ def setup_myships():
 
 
 # Loop:
-
-
 
 def loop():
     qn = 0
@@ -176,8 +168,8 @@ def loop():
         end = time.time()
         if (end - start)>10:
             print("Too slow, Admiral! We missed the window to attack!")
-            x = randint(8)
-            y = randint(3)
+            x = randint(0,7)
+            y = randint(0,2)
         qn+=1
         if qn==24:
             break
@@ -198,7 +190,7 @@ else:
 newthread.start()
 
 loop()
-
+exitflag = 1
 
 if not is_player_1:
     c.send(bytes("bye",'UTF-8'))
