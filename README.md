@@ -5,7 +5,6 @@ Project for EnlighteNUS, a hackathon organized by NUS-IEEE on 23rd-24th February
 
 Code:
  - client.py (client code for RPi)
-	 - can break down into different modules in the future
  - server.py (server code for another RPi)
  
  Setup:
