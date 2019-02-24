@@ -19,7 +19,7 @@ class ServerThread(threading.Thread):
             my_map.update_on_attack(x,y)
             if my_map.message == 1:
                 print("You've been hit at (",x,',',y,"), sir!\n")
-            #update display
+            print_display(my_map)
             winlose = my_map.check_lose(enemy_map)
             if winlose == True:
                 print("You have lost")
@@ -48,7 +48,7 @@ class ClientThread(threading.Thread):
             my_map.update_on_attack(x,y)
             if my_map.message == 1:
                 print("You've been hit at (",x,',',y,"), sir!\n")
-            #update display
+            print_display(my_map)
             winlose = my_map.check_lose(enemy_map)
             if winlose == True:
                 print("You have lost")
@@ -163,6 +163,14 @@ def is_valid(ship, matrix, x, y):
             if matrix.array[y][i]==1:
                 return False
         return True
+
+def print_display(M):
+    str_num = M.prepare_string
+    print('\n')
+    print(str_num[0:8])
+    print(str_num[8:16])
+    print(str_num[16:])
+    print('\n')
 
 global my_map
 my_map= Matrix()
