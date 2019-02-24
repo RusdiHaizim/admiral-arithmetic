@@ -18,8 +18,17 @@ class ServerThread(threading.Thread):
             y = int(msg[2])
             my_map.update_on_attack(x,y)
             if my_map.message == 1:
-                print("You've been hit at ("+x+','+y+"), sir!\n")
+                print("You've been hit at (",x,',',y,"), sir!\n")
             #update display
+            winlose = my_map.check_lose(enemy_map)
+            if winlose == True:
+                print("You have lost")
+                break
+            elif winlose == False:
+                print("You have won")
+                break
+            elif winlose == None:
+                pass
 
         print ("Client at ", clientAddress , " disconnected...")
 
@@ -38,8 +47,17 @@ class ClientThread(threading.Thread):
             y = int(msg[2])
             my_map.update_on_attack(x,y)
             if my_map.message == 1:
-                print("You've been hit at ("+x+','+y+"), sir!\n")
+                print("You've been hit at (",x,',',y,"), sir!\n")
             #update display
+            winlose = my_map.check_lose(enemy_map)
+            if winlose == True:
+                print("You have lost")
+                break
+            elif winlose == False:
+                print("You have won")
+                break
+            elif winlose == None:
+                pass
         self.csocket.close()
 
 class Ship(object):
