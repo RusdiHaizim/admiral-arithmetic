@@ -1,4 +1,4 @@
-#my_address = 192.168.137.63
+#my_address = xxx.xx.xx.xx
 #client1.py
 import socket
 import random
@@ -87,7 +87,7 @@ for ship in ship_list:
 
     my_map.message = my_map.prepare_string()
 
-    IP = '172.31.46.113'
+    IP = 'xxx.xx.xx.xx'
     PORT = 8080
     global server
     server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
