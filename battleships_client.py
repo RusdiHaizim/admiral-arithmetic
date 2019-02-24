@@ -10,19 +10,13 @@ from definitions import *
 2) Use GUI to set up ships on enemy_map
 3) Send my_map to other pi as a 24-bit package
 4) Standby for start (mine_sent && other_received)
-
 #857lj99*
-
 Ships:
-
 3 x size 1
 2 x size 2
 1 x size 3
-
 overall: 3+4+3 = 10/24 tiles have a ship.
-
 Structure of Question List: consists of Question objects
-
 '''
 
 #array 1 (default) - map of hit/miss/not hit on enemy's side
@@ -59,14 +53,10 @@ def setup_myships():
     '''
     '''
     get question list from server (?)
-
     for each ship:
         add in if tiles are valid (X0,X1,Y0,Y1)
         {value for value in variable
-
     submit confirmation (check whether sent or receives)
-
-
     '''
     sent, received = False, False
 
@@ -97,7 +87,7 @@ for ship in ship_list:
 
     my_map.message = my_map.prepare_string()
 
-    IP = '172.20.10.10'
+    IP = '172.31.46.113'
     PORT = 8080
     global server
     server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -196,7 +186,7 @@ def loop():
         #update of your copy of enemy matrix
         enemy_map.update_on_attack(x,y)
         if enemy_map.message:
-            print("You've hit the enemy at ("+x+','+y+")!\n")
+            print("You've hit the enemy at (",x,',',y,")!\n")
             
 setup_myships()
 
@@ -212,4 +202,3 @@ loop()
 if not is_player_1:
     server.send(bytes("bye",'UTF-8'))
 newthread.join()
-
