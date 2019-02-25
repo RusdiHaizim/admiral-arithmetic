@@ -189,6 +189,9 @@ def loop():
             print("You've hit the enemy at (",x,',',y,")!\n")
             
 setup_myships()
+pygame.init()
+gui = output()
+clock = pygame.time.Clock()
 
 if is_player_1:
     newthread = ServerThread(addr,c)
@@ -196,8 +199,16 @@ else:
     newthread = ClientThread(server)
 
 newthread.start()
+main_thread = prog(qn_lst,server)
+main_thread.start()
 
-loop()
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+    gui.update()
+    pygame.display.flip()
+    clock.tick(20)
 
 if not is_player_1:
     server.send(bytes("bye",'UTF-8'))
