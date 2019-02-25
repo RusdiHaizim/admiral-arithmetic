@@ -1,7 +1,55 @@
 import threading
 from random import *
+import pygame
 
+class prog(threading.Thread):
+    def __init__(self,qn_lst,server):
+        threading.Thread.__init__(self)
+        self.qn = 0
+        self.qn_lst = qn_lst
+        self.c = server
+    def run(self):
+        while True:
+            print("Question #"+str(self.qn+1)+"\n")
+            cur = self.qn_lst[self.qn]
+            print(cur)
+            ans = int(input("Enter your answer here: "))
+            while (not cur.check_correct(ans)):
+                ans = int(input("Enter your answer here: "))
+            x = int(input("Enter x coordinate to attack: "))
+            y = int(input("Enter y coordinate to attack: "))
+            while (x<0 or x>7 or y<0 or y>3):
+                x = int(input("Enter x coordinate to attack: "))
+                y = int(input("Enter y coordinate to attack: "))
+            self.qn += 1
+            if self.qn == 24:
+                break
+            self.c.send(bytes(("%s,%s"%(x,y)),'UTF-8'))
+            enemy_map.update_on_attack(x,y)
 
+class output:
+    def __init__(self):
+        self.x_map = my_map.array
+        self.screen = pygame.display.set_mode((800,300))
+        for x in range(100,800,100):
+            pygame.draw.line(self.screen, (0,0,0), (x, 0), (x, 300), 3)
+        for y in range(100,300,100):
+            pygame.draw.line(self.screen, (0,0,0), (0, y), (800, y), 3)
+           
+    def update(self):
+        self.x_map = my_map.array
+        for i in range(0,3):
+           for j in range(0,8):
+               if(self.x_map[i][j] == 0):
+                   pygame.draw.rect(self.screen, (255,255,255), pygame.Rect(3+j*100, 3+i*100, 94, 94))
+               if(self.x_map[i][j] == 1):
+                   pygame.draw.rect(self.screen, (0,255,0), pygame.Rect(3+j*100, 3+i*100, 94, 94))
+               if(self.x_map[i][j] == 2):
+                   pygame.draw.rect(self.screen, (0,0,255), pygame.Rect(3+j*100, 3+i*100, 94, 94))
+               if(self.x_map[i][j] == 3):
+                   pygame.draw.rect(self.screen, (255,0,0), pygame.Rect(3+j*100, 3+i*100, 94, 94))
+
+            
 class ServerThread(threading.Thread):
     def __init__(self,clientAddress,clientsocket):
         threading.Thread.__init__(self)
@@ -48,7 +96,7 @@ class ClientThread(threading.Thread):
             my_map.update_on_attack(x,y)
             if my_map.message == 1:
                 print("You've been hit at (",x,',',y,"), sir!\n")
-            print_display(my_map)
+            #print_display(my_map)
             winlose = my_map.check_lose(enemy_map)
             if winlose == True:
                 print("You have lost")
@@ -164,13 +212,13 @@ def is_valid(ship, matrix, x, y):
                 return False
         return True
 
-def print_display(M):
-    str_num = M.prepare_string
-    print('\n')
-    print(str_num[0:8])
-    print(str_num[8:16])
-    print(str_num[16:])
-    print('\n')
+##def print_display(M):
+##    str_num = M.prepare_string
+##    print('\n')
+##    print(str_num[0:8])
+##    print(str_num[8:16])
+##    print(str_num[16:])
+##    print('\n')
 
 global my_map
 my_map= Matrix()
