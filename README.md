@@ -5,6 +5,8 @@ Project for EnlighteNUS, a hackathon organized by NUS-IEEE on 23rd-24th February
 
 With the theme being Education, we decided to make a teaching tool to help kids learn basic arithmetic: A modified real-time spinoff of the common two-player board game _Battleships_ where opportunities are created when a player successsfully solves simple, randomly generated math problems.
 
+![Picture of GUI](gui_display.jpg)
+
 Code:
  - client.py (client code for RPi)
  - server.py (server code for another RPi)
